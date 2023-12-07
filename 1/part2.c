@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<ctype.h>
+#include<string.h>
 
 FILE *getFilePointer() {
     char *fileName = NULL;
@@ -18,8 +19,6 @@ FILE *getFilePointer() {
         fileName[readLength - 1] = '\0';
     }
 
-    printf("%s\n", fileName);
-
     FILE* fptr = fopen(fileName, "r");
 
     if (fptr == NULL) {
@@ -27,6 +26,35 @@ FILE *getFilePointer() {
     }
 
     return fptr;
+}
+
+int isStringDigit(char *ch) {
+    char *one = "one";
+    char *two = "two";
+    char *three = "three";
+    char *four = "four";
+    char *five = "five";
+    char *six = "six";
+    char *seven = "seven";
+    char *eight = "eight";
+    char *nine = "nine";
+
+    size_t length = strlen(ch);
+
+    char* numberArray[] = { one, two, three, four, five, six, seven, eight, nine };
+
+    for (size_t i = 0; i < 9; i++) {
+        char* number = numberArray[i];
+        size_t numberLength = strlen(number);
+       
+        if (numberLength > length) continue;
+
+        if (strncmp(ch, number, numberLength) == 0) {
+            return i + 1;
+        }
+    }
+
+    return -1;
 }
 
 int main(int argc, char** argv) {
@@ -49,9 +77,17 @@ int main(int argc, char** argv) {
                     firstDigit = number;
                 }
                 lastDigit = number;
+            } else {
+                int isDigit = isStringDigit(&line[i]);
+                if (isDigit > -1) {
+                    if (firstDigit == -1) {
+                        firstDigit = isDigit;
+                    }
+                    lastDigit = isDigit;
+                }
             }
         }
-
+        
         if (firstDigit > -1) {
             sum += 10 * firstDigit + lastDigit;
         }
