@@ -3,31 +3,6 @@
 #include<ctype.h>
 #include<string.h>
 
-FILE *getFilePointer() {
-    char *fileName = NULL;
-    size_t bufferSize = 0;
-
-    printf("Please enter a file name: ");
-    size_t readLength = getline(&fileName, &bufferSize, stdin);
-
-    if (readLength == -1) {
-        perror("Error reading input.\n");
-        free(fileName);
-    }
-
-    if (readLength > 0 && fileName[readLength - 1] == '\n') {
-        fileName[readLength - 1] = '\0';
-    }
-
-    FILE* fptr = fopen(fileName, "r");
-
-    if (fptr == NULL) {
-        perror("Unable to open the file\n");
-    }
-
-    return fptr;
-}
-
 int isSymbol(char ch) {
     return !isdigit(ch) && ch != '.';
 }
@@ -35,7 +10,7 @@ int isSymbol(char ch) {
 int getSumFromLine(char **matrix, int lineNr, int lineSize) {
     int lineSum = 0;
 
-    for (size_t i = 0; i < lineSize; i++) {
+    for (int i = 0; i < lineSize; i++) {
         if (isdigit(matrix[lineNr][i])) {
             char currentSum[8];
             size_t currentSumLength = 0;
@@ -81,13 +56,13 @@ int getSumFromLine(char **matrix, int lineNr, int lineSize) {
 }
 
 int main(int argc, char** argv) {
-    FILE *fptr = fopen("input.txt", "r"); //getFilePointer();
+    FILE *fptr = fopen("input.txt", "r");
     
     size_t maxLength = 256;
     char line[maxLength];
 
-    size_t matrixCapacity = 8;
-    size_t matrixSize = 0;
+    int matrixCapacity = 8;
+    int matrixSize = 0;
     char **matrix = (char **) malloc(sizeof(char *) * matrixCapacity);
 
     while (fgets(line, maxLength, fptr) != NULL) {
@@ -102,17 +77,13 @@ int main(int argc, char** argv) {
         matrixSize++;
     }
 
-    size_t sum = 0;
+    int sum = 0;
 
     for (size_t i = 0; i < matrixSize; i++) {
         sum += getSumFromLine(matrix, i, matrixSize);
     }
 
-    for (size_t i = 0; i < matrixSize; i++) {
-        printf("%s", matrix[i]);
-    }
-
-    printf("Sum: %ld\n", sum);
+    printf("Sum: %d\n", sum);
 
     return 0;
 }
