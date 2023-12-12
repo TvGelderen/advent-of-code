@@ -110,5 +110,7 @@ int main(int argc, char** argv) {
 
     printf("Sum: %ld\n", sum);
 
+    fclose(fptr);
+
     return 0;
 }

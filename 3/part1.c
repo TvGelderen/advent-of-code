@@ -85,5 +85,7 @@ int main(int argc, char** argv) {
 
     printf("Sum: %d\n", sum);
 
+    fclose(fptr);
+
     return 0;
 }
