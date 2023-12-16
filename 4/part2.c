@@ -3,7 +3,7 @@
 #include<string.h>
 
 size_t getWinningNumberCount(char* line) {
-    size_t winningNumbers[16] = {0};
+    size_t winningNumbers[16];
     size_t winningNumbersCount = 0;
 
     char *card = strtok(line, ":");
@@ -48,17 +48,17 @@ size_t getWinningNumberCount(char* line) {
 }
 
 int main(int argc, char** argv) {
-    FILE *file = fopen("input.txt", "r");
+    FILE *fptr = fopen("input.txt", "r");
     
     size_t cards[256];
     size_t numCards = 0;
-    char line[256] = {0};      
+    char line[256];      
 
     for (size_t i = 0; i < 256; i++) {
         cards[i] = 1;
     }
 
-    while (fgets(line, sizeof(line), file)) {
+    while (fgets(line, sizeof(line), fptr)) {
         size_t num = getWinningNumberCount(line);
         size_t add = cards[numCards] > 0 ? cards[numCards] : 1;
 
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 
     printf("Total cards: %ld\n", sum);
 
-    fclose(file);
+    fclose(fptr);
 
     return 0;
 }
