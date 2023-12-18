@@ -34,7 +34,7 @@ size_t getHistoryValue(char *history) {
     size_t val = 0;
 
     for (size_t i = depth - 1; i >= 0; i--) {
-        val += values[i][valuesCount - i - 1];
+        val = values[i][0] - val;
 
         if (i == 0) break;
     }
