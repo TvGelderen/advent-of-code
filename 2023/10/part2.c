@@ -1,111 +1,50 @@
 #include<stdio.h>
 #include<string.h>
+#include<stdbool.h>
 
 enum Direction {
+    ALL,
     NORTH,
     EAST,
     SOUTH,
     WEST
 };
 
-size_t solveMaze(char maze[256][256], int mazeSize, int startY, int startX) {
-    if (maze[startY][startX] != 'S') {
-        return 0;
+bool isInsidePath(char maze[256][256], size_t mazeSize, int y, int x, enum Direction dir) {
+    if (maze[y][x] != '.') {
+        return true;
     }
 
-    int y = startY;
-    int x = startX;
-    enum Direction dir;
-
-    if (y - 1 >= 0) {
-        if (maze[y - 1][x] == '|' ||
-            maze[y - 1][x] == '7' ||
-            maze[y - 1][x] == 'F') {
-            y--;
-            dir = NORTH;
-        }
-    }
-    if (y + 1 < mazeSize) {
-        if (maze[y + 1][x] == '|' ||
-            maze[y + 1][x] == 'L' ||
-            maze[y + 1][x] == 'J') {
-            y++;
-            dir = SOUTH;
-        }
-    }
-    if (x - 1 >= 0) {
-        if (maze[y][x - 1] == '-' ||
-            maze[y][x - 1] == 'L' ||
-            maze[y][x - 1] == 'F') {
-            x--;
-            dir = WEST;
-        }
-    }
-    if (x + 1 < mazeSize) {
-        if (maze[y][x + 1] == '-' ||
-            maze[y][x + 1] == 'J' ||
-            maze[y][x + 1] == '7') {
-            x++;
-            dir = EAST;
-        }
+    if (y == 0 || y == mazeSize - 1 || x == 0 || x == mazeSize - 1) {
+        return false;
     }
 
-    size_t pathLength = 1;
+    printf("y: %d, x: %d\n", y, x);
 
-    while (y != startY || x != startX) {
-        char prevChar = maze[y][x];
-        maze[y][x] = '#';
+    if (dir == NORTH) {
+        return isInsidePath(maze, mazeSize, y - 1, x, NORTH) &&
+               isInsidePath(maze, mazeSize, y, x - 1, WEST) &&
+               isInsidePath(maze, mazeSize, y, x + 1, EAST);
+    } else if (dir == EAST) {
+        return isInsidePath(maze, mazeSize, y - 1, x, NORTH) &&
+               isInsidePath(maze, mazeSize, y + 1, x, SOUTH) &&
+               isInsidePath(maze, mazeSize, y, x + 1, EAST);
+    } else if (dir == SOUTH) {
+        return isInsidePath(maze, mazeSize, y + 1, x, SOUTH) &&
+               isInsidePath(maze, mazeSize, y, x - 1, WEST) &&
+               isInsidePath(maze, mazeSize, y, x + 1, EAST);
 
-        if (prevChar == '|') {
-            if (dir == NORTH) {
-                y--;
-            } else {
-                y++;
-            }
-        } else if (prevChar == '-') {
-            if (dir == EAST) {
-                x++;
-            } else {
-                x--;
-            }
-        } else if (prevChar == 'L') {
-            if (dir == WEST) {
-                dir = NORTH;
-                y--;
-            } else {
-                dir = EAST;
-                x++;
-            }
-        } else if (prevChar == 'J') {
-            if (dir == EAST) {
-                dir = NORTH;
-                y--;
-            } else {
-                dir = WEST;
-                x--;
-            }
-        } else if (prevChar == '7') {
-            if (dir == EAST) {
-                dir = SOUTH;
-                y++;
-            } else {
-                dir = WEST;
-                x--;
-            }
-        } else if (prevChar == 'F') {
-            if (dir == WEST) {
-                dir = SOUTH;
-                y++;
-            } else {
-                dir = EAST;
-                x++;
-            }
-        }
-        
-        pathLength++;
+    } else if (dir == WEST) {
+        return isInsidePath(maze, mazeSize, y - 1, x, NORTH) &&
+               isInsidePath(maze, mazeSize, y + 1, x, SOUTH) &&
+               isInsidePath(maze, mazeSize, y, x - 1, WEST);
+
     }
 
-    return pathLength;
+    return isInsidePath(maze, mazeSize, y - 1, x, NORTH) &&
+           isInsidePath(maze, mazeSize, y + 1, x, SOUTH) &&
+           isInsidePath(maze, mazeSize, y, x - 1, WEST) &&
+           isInsidePath(maze, mazeSize, y, x + 1, EAST);
 }
 
 int main(int argc, char** argv) {
@@ -135,13 +74,17 @@ int main(int argc, char** argv) {
         }
     }
 
-    size_t pathLength = solveMaze(maze, mazeSize, startCoords[0], startCoords[1]);
+    size_t count = 0;
 
     for (size_t i = 0; i < mazeSize; i++) {
-        printf("%s", maze[i]);
+        for (size_t j = 0; j < mazeSize; j++) {
+            if (maze[i][j] == '.' && isInsidePath(maze, mazeSize, i, j, ALL)) {
+                count++;
+            }
+        }
     }
 
-    printf("Result: %ld\n", pathLength / 2 + pathLength % 2);
+    printf("Result: %ld\n", count);
 
     fclose(fptr);
 
