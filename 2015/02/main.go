@@ -16,7 +16,8 @@ func main() {
     }
     defer file.Close()
 
-    var sum uint64 = 0
+    var wrappingSum uint64 = 0
+    var ribbonSum uint64 = 0
 
     scanner := bufio.NewScanner(file)
     for scanner.Scan() {
@@ -54,10 +55,28 @@ func main() {
             }
         }
 
-        sum += 2 * side1 + 2 * side2 + 2 * side3 + slack
+        var bow uint64
+
+        if l < w {
+            if w < h {
+                bow = 2 * l + 2 * w
+            } else {
+                bow = 2 * l + 2 * h                                
+            }
+        } else {
+            if l < h {
+                bow = 2 * w + 2 * l
+            } else {
+                bow = 2 * w + 2 * h
+            }
+        }
+
+        wrappingSum += 2 * side1 + 2 * side2 + 2 * side3 + slack
+        ribbonSum += bow + l * w * h
     }
 
-    fmt.Printf("Part 1: %v\n", sum)
+    fmt.Printf("Part 1: %v\n", wrappingSum)
+    fmt.Printf("Part 2: %v\n", ribbonSum)
 
     if err = scanner.Err(); err != nil {
         fmt.Printf("Error reading from file: %v", err)
