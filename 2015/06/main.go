@@ -17,9 +17,14 @@ func main() {
     defer file.Close()
 
     size := 1000
-    grid := make([][]bool, size)
+    grid1 := make([][]bool, size)
     for i := 0; i < size; i++ {
-        grid[i] = make([]bool, 1000)
+        grid1[i] = make([]bool, 1000)
+    }
+
+    grid2 := make([][]int, size)
+    for i := 0; i < size; i++ {
+        grid2[i] = make([]int, 1000)
     }
 
     const (
@@ -66,26 +71,34 @@ func main() {
             for y := startY; y <= endY; y++ {
                 switch action {
                 case On:
-                    grid[y][x] = true
+                    grid1[y][x] = true
+                    grid2[y][x]++
                 case Off:
-                    grid[y][x] = false
+                    grid1[y][x] = false
+                    if grid2[y][x] > 0 {
+                        grid2[y][x]--
+                    }
                 case Toggle:
-                    grid[y][x] = !grid[y][x]
+                    grid1[y][x] = !grid1[y][x]
+                    grid2[y][x] += 2
                 }
             }
         }
     }
 
     count := 0
-    for _, row := range grid {
-        for _, cell := range row {
-            if cell {
+    brightness := 0
+    for y := 0; y < size; y++ {
+        for x := 0; x < size; x++ {
+            if grid1[y][x] {
                 count++
             }
+            brightness += grid2[y][x]
         }
     }
 
     fmt.Printf("Part 1: %d\n", count)
+    fmt.Printf("Part 2: %d\n", brightness)
 
     if err = scanner.Err(); err != nil {
 		fmt.Printf("Error reading from file: %v", err)
