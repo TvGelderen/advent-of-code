@@ -46,36 +46,50 @@ func main() {
 	}
 
     minDistance := -1
+    maxDistance := -1
     for city := range cities {
-        distance := travel(cities, []string{ city }, 0)
-        if minDistance == -1 || distance < minDistance {
-            minDistance = distance
+        minDist, maxDist := travel(cities, []string{ city }, 0)
+        if minDistance == -1 || minDist < minDistance {
+            minDistance = minDist
+        }
+        if maxDist > maxDistance {
+            maxDistance = maxDist
         }
     }
 
     fmt.Printf("Part 1: %d\n", minDistance)
+    fmt.Printf("Part 1: %d\n", maxDistance)
 
 	if err = scanner.Err(); err != nil {
 		log.Fatalf("Error reading from file: %v\n", err)
 	}
 }
 
-func travel(cities map[string][]City, visited []string, distance int) int {
+func travel(cities map[string][]City, visited []string, distance int) (int, int) {
     current := visited[len(visited)-1]
     minDistance := -1
+    maxDistance := -1
 
     for _, city := range cities[current] {
         if !slices.Contains(visited, city.Name) {
-            dist := travel(cities, append(visited, city.Name), distance + city.Distance)
-            if minDistance == -1 || dist < minDistance {
-                minDistance = dist
+            minDist, maxDist := travel(cities, append(visited, city.Name), distance + city.Distance)
+            if minDistance == -1 || minDist < minDistance {
+                minDistance = minDist
+            }
+            if maxDist > maxDistance {
+                maxDistance = maxDist
             }
        }
     }
     
     if minDistance == -1 {
-        return distance
+        if maxDistance == -1 {
+            return distance, distance
+        }
+        return distance, maxDistance
+    } else if maxDistance == -1 {
+        return minDistance, distance
     }
 
-    return minDistance
+    return minDistance, maxDistance
 }
