@@ -13,8 +13,7 @@ import (
 func main() {
 	file, err := os.Open("input.txt")
 	if err != nil {
-		fmt.Printf("Unable to open file: %v", err)
-		panic(err)
+		log.Fatalf("Unable to open file: %v", err)
 	}
 
 	circuit := make(map[string]uint16)
