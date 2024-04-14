@@ -13,6 +13,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to open file: %v", err)
 	}
+    defer file.Close()
     
     baseCount := 0
     count := 0
