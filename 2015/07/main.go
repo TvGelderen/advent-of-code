@@ -15,6 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to open file: %v", err)
 	}
+    defer file.Close()
 
 	circuit := make(map[string]uint16)
 	var backlog []string
