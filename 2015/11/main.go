@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	password := "cqjxjnds"
+	password := "cqjxxzaa"
 
 	for !isValid(password) {
 		updateIdx := len(password) - 1
